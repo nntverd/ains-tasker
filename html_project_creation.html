@@ -1,0 +1,26 @@
+<div id=project_creation_div class=cl_hihg_div  style="display:none;" >
+  <div>
+     <input type=text id=i_id_new_project_name  placeholder="new project name" /> 
+     <input type=text id=i_id_new_project_desc  placeholder="new project description" /> 
+     <button class=action onclick=F_AddNewProject() > Add new Project </button>
+  </div>
+</div>
+
+<script>
+
+
+// add new project to company
+function F_AddNewProject(){
+  var i_id_new_project_name = document.getElementById( "i_id_new_project_name" ).value;
+  var i_id_new_project_desc = document.getElementById( "i_id_new_project_desc" ).value;
+  
+  google.script.run
+        .withSuccessHandler(onS)
+        .withFailureHandler(onF)
+        .G_AddNewProject( fileId, i_id_new_project_name, i_id_new_project_desc );
+
+}
+
+
+
+</script>

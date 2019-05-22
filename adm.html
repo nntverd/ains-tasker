@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <?!= include( 'style' ) ?>
+  </head>
+  <body>
+    <div id=login>
+      <input type=text id=i_id_lgn required placeholder="login" /> 
+      <input type=password id=i_id_pwd required placeholder="password" /> 
+      <button class=action onclick=F_Adm_Login() > LogIn </button>
+    </div>
+    <div id=Company_list style="display:none;">
+      <button class=action onclick=F_UpdateList() > Update </button>
+      <div id=Company_list_list style="display:block;">
+      
+      </div>
+    </div>
+    <div id=Create_company style="display:none;">
+      <input type=text id=i_id_new_comp_name required placeholder="new company name" /> 
+      <button class=action onclick=F_Add_New_Company() > Add Company </button>
+    </div>
+  </body>
+  <script>
+    function F_Adm_Login(){
+      var i_id_lgn = document.getElementById( "i_id_lgn" ).value;
+      var i_id_pwd = document.getElementById( "i_id_pwd" ).value;
+      
+      document.getElementById( "login" ).style.display = "none";
+      google.script.run.withSuccessHandler(onS_Adm_Login).withFailureHandler(onF_Adm_Login).G_Adm_Login( i_id_lgn, i_id_pwd );
+
+    }
+    
+    function onS_Adm_Login(e){
+      
+      console.log(e);
+      if( e == -1 ){
+        document.getElementById( "login" ).style.display = "block";
+        return;
+      }
+      document.getElementById( "Create_company" ).style.display = "block";
+      document.getElementById( "Company_list" ).style.display = "block";
+    }
+    function onF_Adm_Login(e){
+      document.getElementById( "login" ).style.display = "block";
+      console.log(e);
+    }
+    
+    function F_Add_New_Company(){
+      var i_id_new_comp_name = document.getElementById( "i_id_new_comp_name" ).value;
+      document.getElementById( "i_id_new_comp_name" ).value = "";
+      
+      google.script.run.withSuccessHandler(onS_Add_New_Company).withFailureHandler(onF).F_Create_Company( i_id_new_comp_name );
+
+    }
+    function onS_Add_New_Company(e){
+      
+      console.log(e);
+    }
+    function onF(e){
+      console.log(e);
+    }
+    
+    
+    function F_UpdateList(){
+      google.script.run.withSuccessHandler(onS_UpdateList).withFailureHandler(onF).F_Get_Company_List(  );
+    }
+    
+    function onS_UpdateList(e){
+      var text = ""
+      
+      for( var i in e ){
+        text += e[i][0];
+        text += " | dev <a href='" + e[i][1] +"' >" + e[i][1] +  "</a>";
+        text += " | exec <a href='" + e[i][2] +"' >" + e[i][2] +  "</a>";
+        
+        text += "<br><br>"
+      }
+      document.getElementById( "Company_list_list" ).innerHTML = text; 
+    }
+  </script>
+</html>
+
+

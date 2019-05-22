@@ -1,0 +1,362 @@
+<div id=task_details_div class=cl_hihg_div  style="display:none;" >
+<h3>Task Details</h3>
+<div>
+  <button class=action onclick=F_Task_Details_Task_Ready_For_Control() >Move to control</button>
+  <button onclick=F_Task_Details_Task_Has_Been_Controlled() >Move to fulfilled</button>
+  <button onclick=F_Task_Details_Task_Move_To_Archive()>Move to archive</button>
+</div>
+  <table >
+    <tr>
+      <th class=bg_red>
+        <h4>Name and date</h4>
+        Name of the task <input type=text id=id_input_task_details_name readonly /><br>
+        Task was created <input type=text id=id_input_task_details_date_of_creation readonly /><br>
+        <hr>
+        Name of Creator <input type=text id=id_input_task_details_creator_name readonly /><br>
+        ID of Creator <input type=text id=id_input_task_details_creator_id readonly /><br>
+        
+      </th>
+      <th class=bg_blue >
+        <h4>Who is responsible for task</h4>
+          Name of the task responcer <input type=text 
+                                            id=id_input_task_details_responcer_name  
+                                            onkeyup='F_Filter_Users_list("id_input_task_details_responcer_name")' 
+                                            onkeydown='F_TaskUserInCreationClear( "id_input_task_details_responcer_id" )'
+                                            /><br>
+          ID of the task responcer <input type=text id=id_input_task_details_responcer_id 
+                                          onchange='F_Task_Details_Changed_Responcer_ID()' 
+                                          readonly />
+          
+        <h4>Who will controll after execution</h4>
+          <div id=id_input_task_details_controller_name_id class="cl_scrolling cl_max_height_150;" ></div>
+          Name of an additional controller <input type=text 
+                                            id=id_input_task_details_new_controller_name  
+                                            onkeyup='F_Filter_Users_list("id_input_task_details_new_controller_name")' 
+                                            onkeydown='F_TaskUserInCreationClear( "id_input_task_details_new_controller_id" )'
+                                            /><br>
+          ID of an additional controller <input type=text id=id_input_task_details_new_controller_id readonly />
+          <button onclick=F_Add_Additional_Controller_To_The_Task()>Add</button>
+          
+      </th>
+    </tr>
+    <tr>
+      <th class=bg_yellow>
+        <h4>Project</h4>
+          Name of the project <input type=text 
+                                     id=id_input_task_details_project_name 
+                                     onkeyup='F_Filter_Project_list("id_input_task_details_project_name")' 
+                                     onkeydown='F_TaskUserInCreationClear( "id_input_task_details_project_id" )'
+                                     /><br>
+          ID of the project <input type=text id=id_input_task_details_project_id readonly />
+      </th>
+      <th class=bg_green >
+        <h4>Major Dates</h4>
+          Deadline of task <input type=date id=id_input_task_details_dates_task_deadline 
+                                  onchange='F_Change_Task_Deadline_Date()'/><br>
+          Deadline of controll <input type=date id=id_input_task_details_dates_controll_deadline 
+                                      onchange='F_Change_Control_Deadline_Date()'/>
+      </th>
+    </tr>
+  </table>
+  <button class=create onclick=F_Save_Changes_In_Task_Details_On_Server() > Save Changes </button>
+
+
+  <h4>Events Journal</h4>
+  <div id=id_div_task_deatils_events></div>
+  <div>
+    Add note
+    <input type=text id=input_id_task_details_add_note class=cl_wide_input />
+    <button  onclick=F_Add_Note_To_Task() > Add Note </button>
+  </div>
+</div>
+<script>
+
+
+// ***********************************************************************************************
+// Function that draws all the date from base to edit form
+// ***********************************************************************************************
+function F_Load_Task_Details_For_Edit(__task_id){
+
+  var task_data = 0;
+  for( var it in ___loaded_tasks_list ){
+    if( ___loaded_tasks_list[it][0] == __task_id ){
+      task_data = ___loaded_tasks_list[it]; 
+      break;
+    }
+  }
+  if( task_data == 0 ){
+    alert( "Task with such ID is not found" );
+    return;
+  }
+  console.log( task_data );
+  F_Fill_Task_Details_Form( task_data );
+}
+// ***********************************************************************************************
+// Function that fill out the form
+// ***********************************************************************************************
+function F_Fill_Task_Details_Form(__task_data){
+  ___openned_for_edit_tasks = __task_data;
+  F_Clear_Form_Task_Details();
+  $("#id_input_task_details_name").val(__task_data[2]);
+  $("#id_input_task_details_date_of_creation").val(__task_data[1])
+  
+  // responcer filling
+  var html_controller = "";
+  for( var i in ___loaded_users_list ){
+    console.log( 'user id coparison responcer', ___loaded_users_list[i][3], __task_data[4] );
+    if( __task_data[4].trim() == "" ){
+      $("#id_input_task_details_responcer_name").prop( "readonly", false );
+    } else if( ___loaded_users_list[i][3] == __task_data[4] ){
+      $("#id_input_task_details_responcer_name").val(___loaded_users_list[i][0])
+      $("#id_input_task_details_responcer_id").val(__task_data[4])
+      $("#id_input_task_details_responcer_name").prop( "readonly", true );
+    }
+    var controller_massive = [];
+    if( __task_data[5] != null ){ 
+      controller_massive = JSON.parse( __task_data[5] );
+    }
+    for( var icm in controller_massive ){
+      console.log( 'user id coparison controller', ___loaded_users_list[i][3], controller_massive[icm] );
+      if( ___loaded_users_list[i][3] == controller_massive[icm] ){
+        html_controller += "<div>" + ___loaded_users_list[i][0] + " | " +  controller_massive[icm] + "</div>";
+      }
+    }
+    console.log( 'user id coparison creator', ___loaded_users_list[i][3], __task_data[7] );
+    if( __task_data[7].trim() == "" ){
+      $("#id_input_task_details_creator_name").prop( "readonly", false );
+    } else if( ___loaded_users_list[i][3] == __task_data[7] ){
+      $("#id_input_task_details_creator_name").val(___loaded_users_list[i][0])
+      $("#id_input_task_details_creator_id").val(__task_data[7])
+      $("#id_input_task_details_creator_name").prop( "readonly", true );
+    }
+  }
+  $("#id_input_task_details_controller_name_id").html(html_controller)
+  for( var i in ___loaded_projects_list ){
+    console.log( 'project id coparison', ___loaded_projects_list[i][0], __task_data[6] );
+    if( __task_data[6].trim() == "" ){
+      $("#id_input_task_details_project_name").prop( "readonly", false );
+    } else if( ___loaded_projects_list[i][0] == __task_data[6] ){
+      $("#id_input_task_details_project_name").val(___loaded_projects_list[i][2])
+      $("#id_input_task_details_project_id").val(__task_data[6]);
+      $("#id_input_task_details_project_name").prop( "readonly", true );
+    }
+  }
+//   
+  if( __task_data[8] == null || __task_data[8] == "" ){
+    $("#id_input_task_details_dates_task_deadline").val(null);
+    $("#id_input_task_details_dates_task_deadline").prop( "readonly", false )
+  }
+  else {
+    var date = new Date( __task_data[8] );
+    $("#id_input_task_details_dates_task_deadline").val(date.toISOString().substring(0, 10));
+    $("#id_input_task_details_dates_task_deadline").prop( "readonly", true )
+  }
+  if( __task_data[9] == null || __task_data[9] == "" ){
+    $("#id_input_task_details_dates_controll_deadline").val(null);
+    $("#id_input_task_details_dates_controll_deadline").prop( "readonly", false )
+  }
+  else {
+    var date = new Date( __task_data[9] );
+    $("#id_input_task_details_dates_controll_deadline").val(date.toISOString().substring(0, 10));
+    $("#id_input_task_details_dates_controll_deadline").prop( "readonly", true )
+  }
+  var html_events =  "<table>";
+  var events_massive = [];
+  if( __task_data[10] != null && __task_data[10] != "" )
+    events_massive = JSON.parse( __task_data[10] );
+  for( var ie in events_massive ){
+    html_events += "<tr class=details_events>";
+      html_events += "<th>";
+        html_events += events_massive[ie].date;
+      html_events += "<th>";
+      html_events += "<th>";
+        html_events += events_massive[ie].event;
+      html_events += "<th>";
+      html_events += "<th>";
+        html_events += events_massive[ie].comment;
+      html_events += "<th>";
+      html_events += "<th>";
+        html_events += events_massive[ie].sender;
+      html_events += "<th>";
+    
+    
+    html_events += "</tr>";
+  }
+  html_events += "</table>";
+  $("#id_div_task_deatils_events").html(html_events)
+  
+//  $("#").val()
+
+}
+
+function F_Clear_Form_Task_Details(){
+  $("#id_input_task_details_name").val(null);
+  $("#id_input_task_details_date_of_creation").val(null)
+  $("#id_input_task_details_responcer_name").val(null)
+  $("#id_input_task_details_responcer_id").val(null)
+  $("#id_input_task_details_controller_name_id").html(null)
+  $("#id_input_task_details_project_name").val(null)
+  $("#id_input_task_details_project_id").val(null)
+  
+  $("#id_input_task_details_creator_name").val(null)
+  $("#id_input_task_details_creator_id").val(null)
+  
+}
+
+function F_Save_Changes_In_Task_Details_On_Server(){
+  console.log( "F_Save_Changes_In_Task_Details_On_Server", ___openned_for_edit_tasks )
+  if( ___openned_for_edit_tasks.length == 0 ){
+    alert( "Nothing openned." )
+    return;
+  }
+  var __openned_for_edit_tasks = JSON.stringify(___openned_for_edit_tasks);
+    google.script.run
+          .withSuccessHandler(onS_Save_Changes_In_Task_Details_On_Server)
+          .withFailureHandler(onF)
+          .G_Save_Changes_In_Task_Details_On_Server( fileId, __openned_for_edit_tasks, ____logged_name );
+
+}
+
+function F_Add_Additional_Controller_To_The_Task(){
+  console.log( "F_Add_Additional_Controller_To_The_Task" )
+  
+  if( ___openned_for_edit_tasks.length == 0 ){
+    alert( "Nothing openned." )
+    return;
+  }
+  var id_input_task_details_new_controller_id = $("#id_input_task_details_new_controller_id").val();
+  if( id_input_task_details_new_controller_id == "" ){
+    alert( "Check controller fields. They are empty" )
+    return;
+  }
+  var controller_massive = JSON.parse( ___openned_for_edit_tasks[5] );
+  for( var icm in controller_massive ){
+    if( controller_massive[icm] == id_input_task_details_new_controller_id ){
+      alert( "Controller is already in the list" )
+      return;
+    }
+  }
+  controller_massive.push( id_input_task_details_new_controller_id );
+  ___openned_for_edit_tasks[5] = JSON.stringify(controller_massive);
+  
+  F_Fill_Task_Details_Form(___openned_for_edit_tasks)
+}
+// *********************************************************************
+function onS_Save_Changes_In_Task_Details_On_Server( __tasks ){
+  console.log( __tasks );
+  onS_UpdateTasksList( __tasks )
+  F_Load_Task_Details_For_Edit(___openned_for_edit_tasks[0]);
+//  F_Fill_Task_Details_Form(___openned_for_edit_tasks);
+}
+
+// *********************************************************************
+function F_Change_Task_Deadline_Date(){
+  console.log( "F_Change_Task_Deadline_Date" );
+//  id_input_task_details_dates_task_deadline
+  var date = $("#id_input_task_details_dates_task_deadline").val()
+  console.log( date );
+  date = new Date( date );
+  ___openned_for_edit_tasks[8] = date;
+  F_Fill_Task_Details_Form(___openned_for_edit_tasks);
+}
+// *********************************************************************
+function F_Change_Control_Deadline_Date(){
+  console.log( "F_Change_Control_Deadline_Date" )
+//  id_input_task_details_dates_controll_deadline
+  var date = $("#id_input_task_details_dates_controll_deadline").val()
+  console.log( date );
+  date = new Date( date );
+  ___openned_for_edit_tasks[9] = date;
+  F_Fill_Task_Details_Form(___openned_for_edit_tasks);
+}
+
+// *********************************************************************
+function F_Task_Details_Changed_Responcer_ID(){
+  console.log( "\n\nF_Task_Details_Changed_Responcer_ID" )
+  var resp_id = $("#id_input_task_details_responcer_id").val()
+  ___openned_for_edit_tasks[4] = resp_id;
+  F_Fill_Task_Details_Form(___openned_for_edit_tasks);
+}
+
+// *********************************************************************
+function F_Task_Details_Changed_Project_ID(){
+  console.log( "\n\F_Task_Details_Changed_Project_ID" )
+  var proj_id = $("#id_input_task_details_project_id").val()
+  ___openned_for_edit_tasks[6] = proj_id;
+  F_Fill_Task_Details_Form(___openned_for_edit_tasks);
+}
+
+// *********************************************************************
+//function F_Add_Note_To_Task(){
+//  console.log( "\n\F_Add_Note_To_Task" )
+//  var note = $("#input_id_task_details_add_note").val()
+//  if( note.trim().length == 0 ) {
+//    alert( "Add some note before saving" );
+//    return;
+//  }
+//
+//  var _events = JSON.parse(___openned_for_edit_tasks[10]);
+//  var comment = ___openned_for_edit_tasks;
+//  comment[10] = "";
+//  _events = F_ADD_JOURNAL_EVENT(_events, new Date(), "Adding Note", note, ____logged_name )
+//  ___openned_for_edit_tasks[10] = JSON.stringify(_events);
+//  F_Load_Task_Details_For_Edit(___openned_for_edit_tasks[0]);
+//
+//}
+
+
+//G_ADD_JOURNAL_EVENT_AND_SAVE(_fileId, _taskid, __date, __event, __comment, __sender )
+// *********************************************************************
+function F_Add_Note_To_Task(){
+  console.log( "\n\F_Add_Note_To_Task" )
+  var note = $("#input_id_task_details_add_note").val()
+  if( note.trim().length == 0 ) {
+    alert( "Add some note before saving" );
+    return;
+  }
+  google.script.run
+          .withSuccessHandler(onS_Add_Note_To_Task)
+          .withFailureHandler(onF)
+          .G_Add_Note_To_Task( fileId, ___openned_for_edit_tasks[0], note, ____logged_name );
+
+}
+// *********************************************************************
+function onS_Add_Note_To_Task( __tasks ){
+  console.log( __tasks );
+  onS_UpdateTasksList( __tasks )
+  F_Load_Task_Details_For_Edit(___openned_for_edit_tasks[0]);
+
+}
+// -----------------------------------------------------------------------------
+// ADD JOURNAL EVENT
+// -----------------------------------------------------------------------------
+function F_ADD_JOURNAL_EVENT(__massive, __date, __event, __comment, __sender ){
+  console.log( "G_ADD_JOURNAL_EVENT(__massive, __date, __event, __comment )" );
+  console.log( __massive );
+  var massive = __massive;
+  var _event = {
+    date: __date,
+    event: __event,
+    comment: __comment,
+    sender: __sender
+  }
+  massive.push( _event );
+  return massive;
+}
+// -----------------------------------------------------------------------------
+// ADD JOURNAL EVENT
+// -----------------------------------------------------------------------------
+function F_Task_Details_Task_Ready_For_Control(){
+  google.script.run
+          .withSuccessHandler(onS_Task_Details_Task_Ready_For_Control)
+          .withFailureHandler(onF)
+          .G_MOVE_FROM_ACTIVE_TO_CONTROL(fileId, ___openned_for_edit_tasks[0], ____logged_name )
+//          .G_Add_Note_To_Task( fileId, ___openned_for_edit_tasks[0], note, ____logged_name );
+  
+}
+function onS_Task_Details_Task_Ready_For_Control(e){
+  F_Clear_Form_Task_Details();
+  F_GeneralUpdate();
+}
+
+</script>

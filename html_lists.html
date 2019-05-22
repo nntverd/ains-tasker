@@ -1,0 +1,241 @@
+<!-- div for projects list -->
+             <!-- div for projects list -->
+                          <!-- div for projects list -->
+<div id=id_div_projects_list_aggregator class=cl_div_absolute hidden>
+  <div id=comp_projects_in_creation_btn class=cl_div_without_margins_and_paddings >
+    <button class=action onclick=F_Update_Projects_List_In_Creation() > Update Projects List </button>
+    <button class=create onclick='F_Hide_Element_By_ID("id_div_projects_list_aggregator")' > Close </button>
+  </div>
+  <div id=comp_projects_in_creation class="cl_div_without_margins_and_paddings">
+  
+  </div>
+  <div id=comp_projects_in_creation_btn class=cl_div_without_margins_and_paddings >
+    <button class=action onclick=F_Update_Projects_List_In_Creation() > Update Projects List </button>
+  </div>
+</div>
+
+
+
+
+
+<!-- div for users list -->
+             <!-- div for users list -->
+                          <!-- div for users list -->
+<div id=id_div_users_list_aggregator class=cl_div_absolute hidden>
+  <div id=comp_users_in_creation_btn class=cl_div_without_margins_and_paddings >
+    <button class=action onclick=F_Update_Users_List() > Update Users List </button>
+    <button class=create onclick='F_Hide_Element_By_ID("id_div_users_list_aggregator")' > Close </button>
+  </div>
+  <div id=comp_users_in_creation class="cl_div_without_margins_and_paddings">
+  
+  </div>
+  <div id=comp_users_in_creation_btn class=cl_div_without_margins_and_paddings >
+    <button class=action onclick=F_Update_Users_List() > Update Users List </button>
+  </div>
+</div>
+
+
+
+
+<script>
+
+// *************************************************************************
+// Show PROJECT LIST
+// *************************************************************************
+function F_Show_Project_List_Near_Input( __input_id ){
+  console.log( "F_Show_Project_List_Near_Input", __input_id);
+  var xy1 = $( "#"+__input_id ).offset();
+  console.log( xy1 );
+  var xy2 = xy1;
+  xy2.top += $( "#"+__input_id ).height() + 10;
+  $("#id_div_projects_list_aggregator").offset( xy2 );
+  $("#id_div_projects_list_aggregator").show(  );
+  
+}
+// *************************************************************************
+// Filter PROJECT LIST
+// *************************************************************************
+var __id_last_input_for_project_name = "";
+var __id_last_input_for_project_id = "";
+//--------------------------------------------------------------------------
+function F_Filter_Project_list(__input_id){
+  F_Show_Project_List_Near_Input( __input_id );
+  F_Remember_Last_Inputs_For_Project( __input_id);
+  var i_id_new_task_project = document.getElementById( __input_id );
+  i_id_new_task_project.classList.remove( "cl_selected_person" );
+  var string = i_id_new_task_project.value;
+  var projects = ___loaded_projects_list
+  var strs = string.split( " " );
+  console.log( strs )
+  var comp_projects_in_creation = document.getElementById( "comp_projects_in_creation" );
+  var html = "";
+  
+  for( var ius in projects ){
+    var loaded_projects_list_str = projects[ius].toString();
+    var skip = 0;
+    for( var is in strs ){
+      console.log( "comparison", loaded_projects_list_str, strs[is], loaded_projects_list_str.indexOf( strs[is] ) )
+      if( loaded_projects_list_str.toLowerCase().indexOf( strs[is].toLowerCase() ) < 0 ){
+        skip = 1;
+      }
+    }
+    if( skip == 1 ){
+      continue;
+    }
+    
+    var string = projects[ius][0] + " | " + projects[ius][2]; 
+    html += "<div class=cl_div_without_margins_and_paddings >";
+    html += "<button class=cl_text_plus_btn onclick=F_Add_Project('"+encodeURIComponent(projects[ius][0])+"','"+ encodeURIComponent(string) +"') >"+ string +"</button>";
+    html += "</div>";
+  
+  }
+  comp_projects_in_creation.innerHTML = html;
+}
+
+// *************************************************************************
+// Add Project to input
+// *************************************************************************
+function F_Add_Project(__id, __string){
+  var i_id_new_task_project = document.getElementById( __id_last_input_for_project_name );
+  var i_id_new_task_project_id = document.getElementById( __id_last_input_for_project_id );
+  i_id_new_task_project.value = decodeURIComponent( __string );
+  i_id_new_task_project_id.value = decodeURIComponent( __id );
+  i_id_new_task_project.classList.add( "cl_selected_person" );
+  console.log( decodeURIComponent( __id, __string ) );
+  if( __id_last_input_for_project_id == "id_input_task_details_project_id" ){
+    F_Task_Details_Changed_Project_ID();
+  }
+  F_Hide_Element_By_ID('id_div_projects_list_aggregator')
+}
+// *************************************************************************
+// Function that remember last inputs for projects
+// *************************************************************************
+function F_Remember_Last_Inputs_For_Project( __input_id){
+  __id_last_input_for_project_name = __input_id;
+  if( __input_id == "i_id_new_task_project" ){
+    __id_last_input_for_project_id = "i_id_new_task_project_id";
+  }
+  if( __input_id == "id_input_task_details_project_name" ){
+    __id_last_input_for_project_id = "id_input_task_details_project_id";
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// *************************************************************************
+// Show USERS LIST
+// *************************************************************************
+function F_Show_Users_List_Near_Input( __input_id ){
+  console.log( "F_Show_Users_List_Near_Input", __input_id);
+  var xy1 = $( "#"+__input_id ).offset();
+  console.log( xy1 );
+  var xy2 = xy1;
+  xy2.top += $( "#"+__input_id ).height() + 10;
+  $("#id_div_users_list_aggregator").offset( xy2 );
+  $("#id_div_users_list_aggregator").show(  );
+  
+}
+// *************************************************************************
+// Filter USERS LIST
+// *************************************************************************
+var __id_last_input_for_user_name = "";
+var __id_last_input_for_user_id = "";
+//--------------------------------------------------------------------------
+function F_Filter_Users_list(__input_id){
+  F_Show_Users_List_Near_Input( __input_id );
+  F_Remember_Last_Inputs_For_Users( __input_id);
+  var i_id_new_task_project = document.getElementById( __input_id );
+  i_id_new_task_project.classList.remove( "cl_selected_person" );
+  var string = i_id_new_task_project.value;
+  var projects = ___loaded_users_list;
+  var strs = string.split( " " );
+  console.log( strs )
+  var comp_projects_in_creation = document.getElementById( "comp_users_in_creation" );
+  var html = "";
+  
+  for( var ius in projects ){
+    var loaded_projects_list_str = projects[ius].toString();
+    var skip = 0;
+    for( var is in strs ){
+      console.log( "comparison", loaded_projects_list_str, strs[is], loaded_projects_list_str.indexOf( strs[is] ) )
+      if( loaded_projects_list_str.toLowerCase().indexOf( strs[is].toLowerCase() ) < 0 ){
+        skip = 1;
+      }
+    }
+    if( skip == 1 ){
+      continue;
+    }
+    if( projects[ius][0] == "admin" ) continue;
+    var string = projects[ius][0] + " | " + projects[ius][1] + " | " + projects[ius][3]; 
+    html += "<div class=cl_div_without_margins_and_paddings >";
+    html += "<button class=cl_text_plus_btn onclick=F_Add_Users('"+encodeURIComponent(projects[ius][3])+"','"+ encodeURIComponent(string) +"') >"+ string +"</button>";
+    html += "</div>";
+  
+  }
+  comp_projects_in_creation.innerHTML = html;
+}
+
+// *************************************************************************
+// Add Project to input
+// *************************************************************************
+function F_Add_Users(__id, __string){
+  var i_id_new_task_project = document.getElementById( __id_last_input_for_user_name );
+  var i_id_new_task_project_id = document.getElementById( __id_last_input_for_user_id );
+  i_id_new_task_project.value = decodeURIComponent( __string );
+  i_id_new_task_project_id.value = decodeURIComponent( __id );
+  i_id_new_task_project.classList.add( "cl_selected_person" );
+  console.log( decodeURIComponent( __id, __string ) );
+  if( __id_last_input_for_user_id == "id_input_task_details_responcer_id" ){
+    F_Task_Details_Changed_Responcer_ID();
+  }
+  F_Hide_Element_By_ID('id_div_users_list_aggregator')
+}
+// *************************************************************************
+// Function that remember last inputs for users
+// *************************************************************************
+function F_Remember_Last_Inputs_For_Users( __input_id){
+  __id_last_input_for_user_name = __input_id;
+  if( __input_id == "i_id_new_task_responcer" ){
+    __id_last_input_for_user_id = "i_id_new_task_responcer_id";
+  }
+  if( __input_id == "i_id_new_task_controller" ){
+    __id_last_input_for_user_id = "i_id_new_task_controller_id";
+  }
+  if( __input_id == "id_input_task_details_responcer_name" ){
+    __id_last_input_for_user_id = "id_input_task_details_responcer_id";
+  }
+  if( __input_id == "id_input_task_details_new_controller_name" ){
+    __id_last_input_for_user_id = "id_input_task_details_new_controller_id";
+  }
+  
+}
+
+
+//***********-*--*-*--*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+function F_Update_Users_List(){
+
+  google.script.run
+        .withSuccessHandler(onS_Update_Users_List)
+        .withFailureHandler(onF)
+        .G_Update_Users_List( fileId );
+
+}
+
+</script>

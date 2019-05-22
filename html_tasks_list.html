@@ -1,0 +1,31 @@
+<div id=tasks_list_div  class=cl_hihg_div style="display:none;" >
+  <h3>Tasks List</h3>
+  <div>
+    <button class=action onclick='F_Tasks_List_Change_list("active")' >Active Tasks</button>
+    <button onclick='F_Tasks_List_Change_list("control")' >Tasks on Control</button>
+    <button onclick='F_Tasks_List_Change_list("fulfilled")' >Fulfilled Tasks</button>
+    <button onclick='F_Tasks_List_Change_list("archived")' >Archived Tasks</button>
+
+  </div>
+  <div id=tasks_list > </div>
+</div>
+
+<script>
+function F_UpdateTasksList(){
+  google.script.run
+        .withSuccessHandler(onS)
+        .withFailureHandler(onF)
+        .G_UpdateTasksList( fileId );
+}
+
+function F_Load_Task_details( __task_id ){
+  console.log( "\n\n\n\n F_Load_Task_details" );
+  var task_id = decodeURIComponent( __task_id );
+  console.log( task_id );
+  F_Load_Task_Details_For_Edit(task_id);
+  var btn_el = document.getElementById( "id_btn_el_task_details" );
+  F_Show_Menu_Div(btn_el, "task_details_div", "showonly");
+
+}
+
+</script>

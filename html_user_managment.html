@@ -1,0 +1,30 @@
+<div id=user_managment class=cl_hihg_div  style="display:none;" >
+<h3>User Managment</h3>
+  User creation is hidden;
+  <div id="user_creation_form" >
+    <input type=text id=i_id_new_user_name required placeholder="name of new user" /> 
+    <input type=text id=i_id_new_user_email required placeholder="email of new user" /> 
+    <input type=text id=i_id_new_user_passw required placeholder="password of new user" /> 
+    <button class=action onclick=F_Add_New_User() > add </button>
+  </div>
+
+</div>
+
+<script>
+// style="display:none;"
+   
+    function F_Add_New_User(){
+      var i_id_new_user_name = document.getElementById( "i_id_new_user_name" ).value;
+      var i_id_new_user_email = document.getElementById( "i_id_new_user_email" ).value;
+      var i_id_new_user_passw = document.getElementById( "i_id_new_user_passw" ).value;
+      
+      google.script.run.withSuccessHandler(onS_Add_New_User).withFailureHandler(onF).G_Add_New_User( fileId, i_id_new_user_name, i_id_new_user_email, i_id_new_user_passw );
+
+    }
+    function onS_Add_New_User(e){
+      
+      console.log(e);
+    }
+    
+
+</script>

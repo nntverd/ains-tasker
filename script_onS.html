@@ -1,0 +1,254 @@
+<script>
+// ****************************************************************************
+// return on failure
+// ****************************************************************************
+
+function onF(error){
+  console.log(error);
+}
+// ****************************************************************************
+// return on success
+// [code_of_return, function_name, data_in_JSON]
+// ****************************************************************************
+function onS( res ){
+  console.log( res[0] );
+  console.log( res[1] );
+  // -   -   -   -   -   -   -   -   -   -   -
+  // 100 task routine
+  // -   -   -   -   -   -   -   -   -   -   -
+  if( res[0] == 100 ){
+    var tasks = JSON.parse( res[2] );
+    onS_Add_New_Task(tasks);
+  }
+  if( res[0] == 101 ){
+    var tasks = JSON.parse( res[2] );
+    onS_UpdateTasksList(tasks);
+  }
+
+
+
+  // -   -   -   -   -   -   -   -   -   -   -
+  // 200 users routine
+  // -   -   -   -   -   -   -   -   -   -   -
+  if( res[0] == 200 ){
+    var users = JSON.parse( res[2] );
+    onS_Update_Users_List(users);
+  }
+  
+  
+  // -   -   -   -   -   -   -   -   -   -   -
+  // 700 Logged Routine
+  // -   -   -   -   -   -   -   -   -   -   -
+  if( res[0] == 700 ){
+    var current_user = JSON.parse( res[2] );
+    onS_Usr_Login(current_user, res[0]);
+  }
+  // -   -   -   -   -   -   -   -   -   -   -
+  // 900 Project routine
+  // -   -   -   -   -   -   -   -   -   -   -
+  if( res[0] == 900 ){
+    var projects = JSON.parse( res[2] );
+    onS_AddNewProject(projects);
+  }
+  if( res[0] == 901 ){
+    var projects = JSON.parse( res[2] );
+    onS_UpdateProjectsList(projects);
+  }
+  
+}
+
+// ****************************************************************************
+// After add new task | 100                  filename = html_task_creation.html
+// ****************************************************************************
+function onS_Add_New_Task(__tasks){
+  console.log( "onS_Add_New_Task(__tasks)" )
+  onS_UpdateTasksList( __tasks );
+  console.log(__tasks);
+}
+
+// ****************************************************************************
+// Return on updating user list | 200                filename = html_lists.html
+// ****************************************************************************
+function onS_Update_Users_List(_users){
+  var users = JSON.parse(_users)
+  ___loaded_users_list = users;
+  console.log(users);
+}
+
+
+// ****************************************************************************
+// Drawwing list of Tasks | 101                  filename = html_tasks_list.htm
+// ****************************************************************************
+function onS_UpdateTasksList( __tasks ){
+  console.log( "onS_UpdateTasksList", __tasks )
+//  var tasks = JSON.parse(__tasks);
+  var tasks = (__tasks);
+  ___loaded_tasks_list = tasks;
+  var html = "<table>";
+    html += "<tr class=details_events >"
+      
+      html = AUX_UpdateTasksList_DrawTableHeader( html );
+      
+    html += "</tr>"
+    for( var ip=0; ip<tasks.length; ip++){
+//    html += tasks[ip].toString() + "<hr>";
+    html += "<tr valign=top   class=details_events  >"
+      html = AUX_UpdateTasksList_DrawSimpleParameter( html, tasks[ip][0] )
+      html = AUX_UpdateTasksList_DrawSimpleParameter( html, tasks[ip][1] )
+      html = AUX_UpdateTasksList_DrawSimpleParameter( html, tasks[ip][2] )
+      html = AUX_UpdateTasksList_DrawSimpleParameter( html, tasks[ip][3] )
+
+      // creator drawing
+      html = AUX_UpdateTasksList_DrawComplexParameter( html, tasks[ip][7], ___loaded_users_list )
+
+      // responcer drawing
+      html = AUX_UpdateTasksList_DrawComplexParameter( html, tasks[ip][4], ___loaded_users_list )
+
+      // controller drawing
+      html = AUX_UpdateTasksList_DrawControllerList( html, tasks[ip][5], ___loaded_users_list )
+      
+      // project drawing
+      html = AUX_UpdateTasksList_DrawProjectParameter( html, tasks[ip][6], ___loaded_projects_list )
+
+      // button
+      html += "<th>";
+        html += "<button onclick=F_Load_Task_details('"+ encodeURIComponent(tasks[ip][0]) +"') >" + "Edit" + "</button>";
+      html += "</th>";
+        
+      
+    html += "</tr>"
+  }
+  html += "</table>";
+  $("#tasks_list").html( html );
+}
+// ****************************************************************************
+// Drawwing list of Tasks | Header of the table | AUX               filename = script_onS.html
+// ****************************************************************************
+function AUX_UpdateTasksList_DrawTableHeader( __html ){
+  var html = __html;
+  html += "<th>"+  "ID" +"</th>"
+  html += "<th>"+  "Date of Creation" +"</th>"
+  html += "<th>"+  "Name" +"</th>"
+  html += "<th>"+  "Description" +"</th>"
+  html += "<th>"+  "Creator" +"</th>"
+  html += "<th>"+  "Who responces" +"</th>"
+  html += "<th>"+  "Who controls" +"</th>"
+  html += "<th>"+  "Project" +"</th>"
+  html += "<th>"+  "Load Detail" +"</th>"
+  return html;
+}
+// ****************************************************************************
+// Drawwing list of Tasks | Simple Parameter | AUX               filename = script_onS.html
+// ****************************************************************************
+function AUX_UpdateTasksList_DrawSimpleParameter( __html, parameter ){
+  var html = __html;
+  html += "<th>"+  parameter +"</th>"
+  return html;
+}
+// ****************************************************************************
+// Drawwing list of Tasks | Complex Parameter | AUX               filename = script_onS.html
+// ****************************************************************************
+function AUX_UpdateTasksList_DrawComplexParameter( __html, parameter, __list ){
+  var html = __html;
+  html += "<th>";
+    console.log( "user list before comparison", __list )
+    for( var i in __list ){
+     console.log( 'user id coparison', __list[i][3], parameter );
+     if( __list[i][3] == parameter ){
+       html += "<div class=cl_div_in_th >"+  __list[i][0] + "</div>";
+     }
+    }
+    html += "<div class=cl_div_in_th >" +parameter + "</div>";
+  html += "</th>";
+  return html;
+}
+// ****************************************************************************
+// Drawwing list of Tasks | Controller list | AUX               filename = script_onS.html
+// ****************************************************************************
+function AUX_UpdateTasksList_DrawControllerList( __html, parameter_massive, __list ){
+  var html = __html;
+  
+  var controller_massive = [];
+  if( parameter_massive != null ){ 
+    controller_massive = JSON.parse( parameter_massive );
+  } 
+  else{ 
+    return html;
+  }
+  html += "<th ><div class=cl_scrolling >";
+  for( var icm in controller_massive ){
+    console.log( "user list before comparison", __list )
+    for( var i in __list ){
+      console.log( 'user id coparison', __list[i][3], controller_massive[icm] );
+      if( __list[i][3] == controller_massive[icm] ){
+        html += "<div class=cl_div_in_th >"+  __list[i][0] + "</div>";
+      }
+    }
+    html += "<div class=cl_div_in_th >" +controller_massive[icm] + "</div>";
+  }
+  html += "</div></th>";
+  
+  return html;
+}
+// ****************************************************************************
+// Drawwing list of Tasks | Project Parameter | AUX               filename = script_onS.html
+// ****************************************************************************
+function AUX_UpdateTasksList_DrawProjectParameter( __html, parameter, __list ){
+  var html = __html;
+  html += "<th>";
+    console.log( "user list before comparison", __list )
+    for( var i in __list ){
+     console.log( 'user id coparison', __list[i][0], parameter );
+     if( __list[i][0] == parameter ){
+       html += "<div class=cl_div_in_th >"+  __list[i][2] + "</div>";
+     }
+    }
+    html += "<div class=cl_div_in_th >" +parameter + "</div>";
+  html += "</th>";
+  return html;
+}
+
+
+// ****************************************************************************
+// When user has logged | 700                  filename = html_login_block.html
+// ****************************************************************************
+function onS_Usr_Login(user, code){
+  if( code != 0 ){
+    document.getElementById( "hello_h" ).innerText = "Hello, " + user[0];
+    $("#id_div_main_field").show();
+    $("#id_div_login_show_up_on_load").hide();
+    $("#id_h2_login_hello").text( "приветствует Вас, " + user[0] );
+    
+    ____logged = user[1];
+    ____logged_name = user[0];
+    $("#i_id_new_creator_name").val( user[0] );
+    $("#i_id_new_creator_id").val( user[1] );
+    
+    /* здесь процедуры показа основных полей */
+    
+    F_GeneralUpdate();
+  }
+  console.log(user);
+}
+
+// ****************************************************************************
+// New Project Added Routine | 900        filename = html_project_creation.html
+// ****************************************************************************
+function onS_AddNewProject(e){
+  console.log(e);
+}
+
+// ****************************************************************************
+// Update Project Lists | 901                filename = html_projects_list.html
+// ****************************************************************************
+function onS_UpdateProjectsList( __projects ){
+  console.log( __projects )
+  var projects = JSON.parse(__projects);
+  ___loaded_projects_list = projects;
+  var html = "";
+  for( var ip=0; ip<projects.length; ip++){
+    html += projects[ip].toString() + "<hr>";
+  }
+  $("#project_list").html( html );
+}
+</script>

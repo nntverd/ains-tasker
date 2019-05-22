@@ -1,0 +1,133 @@
+<!--
+Devided user management into separate div
+-->
+<div id=task_creation_div class=cl_hihg_div style="display:none;" >
+  <h2>Task Creation</h2>
+  <table>
+    <tr valign="top">
+      <th>
+        <h3>New Task</h3>
+        
+        <input type=text id=i_id_new_task_name required placeholder="name of new task" /> 
+        <input type=text id=i_id_new_task_desc required placeholder="description of new task" /> 
+      </th>
+      <th>
+        <h3>Responser</h3>
+        
+        <input type=text id=i_id_new_task_responcer  
+               onkeyup='F_Filter_Users_list("i_id_new_task_responcer")' 
+               onkeydown='F_TaskUserInCreationClear( "i_id_new_task_responcer_id" )'
+               placeholder="who is responsible for new task" />
+        <button onclick='F_Filter_Users_list("i_id_new_task_responcer")' >Show List</button>
+        <input type=text id=i_id_new_task_responcer_id readonly />
+        
+        readonly
+      </th>
+      <th>
+        <h3>Controller</h3>
+        <input type=text id=i_id_new_task_controller 
+               onkeyup='F_Filter_Users_list("i_id_new_task_controller")' 
+               onkeydown='F_TaskUserInCreationClear( "i_id_new_task_controller_id" )'
+               placeholder="who will controll job insted of task creator" />
+        <button onclick='F_Filter_Users_list("i_id_new_task_controller")' >Show List</button>
+        <input type=text id=i_id_new_task_controller_id  readonly  />
+      
+        readonly
+      </th>
+      <th>
+        <h3>Project</h3>
+        <input type=text 
+               id=i_id_new_task_project 
+               onkeyup="F_Filter_Project_list('i_id_new_task_project')" 
+               onkeydown="F_TaskProjectInCreationClear()" 
+               placeholder="What project is holder of this task" />
+        <button onclick='F_Filter_Project_list("i_id_new_task_project")' >Show List</button>
+        <input type=text id=i_id_new_task_project_id  readonly />
+        readonly
+      </th>
+    </tr>
+    <tr valign="top">
+      <th> 
+        <button class=create onclick=F_Add_New_Task() > Add New Task </button> 
+      </th>
+      <th>
+        <h3>Creator</h3>
+        <input type=text id=i_id_new_creator_name readonly /> 
+        <input type=text id=i_id_new_creator_id readonly /> 
+
+      </th>
+      <th>
+
+      </th>
+      <th>
+       
+      </th>
+    </tr>
+  </table>
+  
+  <br>
+</div>
+
+
+
+<script>
+
+    function F_Add_New_Task(){
+      var i_id_new_task_name          = document.getElementById( "i_id_new_task_name" ).value;
+      var i_id_new_task_desc          = document.getElementById( "i_id_new_task_desc" ).value;
+      var i_id_new_task_creator_id    = document.getElementById( "i_id_new_creator_id" ).value;
+      var i_id_new_task_responcer_id  = document.getElementById( "i_id_new_task_responcer_id" ).value;
+      var i_id_new_task_controller_id = document.getElementById( "i_id_new_task_controller_id" ).value;
+      var i_id_new_task_project_id    = document.getElementById( "i_id_new_task_project_id" ).value;
+      
+      if( i_id_new_task_responcer_id == i_id_new_task_controller_id && i_id_new_task_responcer_id != ""  ){
+        alert( "Responser and Controller Cannot Be One Person" );
+        return;
+      }
+      
+      google.script.run.withSuccessHandler(onS_Add_New_Task).withFailureHandler(onF).G_Add_New_Task( 
+        fileId, 
+        i_id_new_task_name, 
+        i_id_new_task_desc ,
+        i_id_new_task_responcer_id,
+        i_id_new_task_controller_id,
+        i_id_new_task_project_id,
+        i_id_new_task_creator_id,
+        ____logged_name
+      );
+
+    }
+    
+  
+
+    
+
+    
+    
+    function F_Update_Projects_List_In_Creation(){
+      F_UpdateProjectsList();
+      var projects = ___loaded_projects_list;
+      var comp_projects_in_creation = document.getElementById( "comp_projects_in_creation" );
+      
+      var html = "";
+      
+      for( var ius in projects ){
+        var string = projects[ius][0] + " | " + projects[ius][2]; 
+        html += "<div>";
+        html += "<button class=cl_text_plus_btn onclick=F_Add_Project('"+encodeURIComponent(projects[ius][0])+"','"+ encodeURIComponent(string) +"') >"+ string +"</button>";
+        html += "</div>";
+
+      }
+      comp_projects_in_creation.innerHTML = html;
+    }
+    
+function F_TaskProjectInCreationClear(){
+//  $("#i_id_new_task_project").val(null)
+  $("#i_id_new_task_project_id").val(null)
+}
+function F_TaskUserInCreationClear( __input_id ){
+  $("#"+__input_id).val(null)
+}
+    
+</script>
+

@@ -1,0 +1,21 @@
+<h3>Log In</h3>
+<div id=div_user_login  class=cl_hihg_div >
+  <input type=text id=i_id_usr_lgn value="777@ains.kz" required placeholder="login: id or email or name" /> 
+  <input type=password id=i_id_usr_pwd value="1123" required placeholder="password" /> 
+  <button class=action onclick=F_Usr_Login() > LogIn </button>
+  <h2 id=hello_h></h2>
+</div>
+
+<script>
+    function F_Usr_Login(){
+      var i_id_usr_lgn = document.getElementById( "i_id_usr_lgn" ).value;
+      var i_id_usr_pwd = document.getElementById( "i_id_usr_pwd" ).value;
+      
+      google.script.run.withSuccessHandler(onS).withFailureHandler(onF).G_Usr_Login( fileId, i_id_usr_lgn, i_id_usr_pwd );
+    
+    }
+    
+
+
+
+</script>

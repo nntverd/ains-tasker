@@ -1,0 +1,17 @@
+<div id=projects_list_div  class=cl_hihg_div style="display:none;" >
+<h3>Projects list</h3>
+  <div>
+    <h3>Update</h3>
+    <button class=share onclick=F_UpdateProjectsList() > Update </button>
+    <div id=project_list></div>
+  </div>
+
+</div>
+
+<script>
+function F_UpdateProjectsList(){
+  google.script.run.withSuccessHandler(onS_UpdateProjectsList).withFailureHandler(onF).G_UpdateProjectsList( fileId );
+}
+
+
+</script>
