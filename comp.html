@@ -1,160 +1,161 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <base target="_top">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 
-    <?!= include("style")?>
-    <?!= include("script_onS")?>
-    
-  </head>
-  <body>
-    <div id=id_div_login_show_up_on_load >
-      <?!= include("html_login_block") ?>
-    </div>
-    
-    <!-- SHOW AFTER LOGIN -->
-    <div id=id_div_main_field hidden>
+<head>
+  <base target="_top">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+  <?!= include("style")?>
+  <?!= include("script_onS")?>
+
+</head>
+
+<body>
+  <div id=id_div_login_show_up_on_load>
+    <?!= include("html_login_block") ?>
+  </div>
+
+  <!-- SHOW AFTER LOGIN -->
+  <div id=id_div_main_field hidden>
     <!-- SHOW AFTER LOGIN -->
     <div id=const_menu class=top_menu>
-      <button onclick='F_Show_Menu_Div(this,"project_creation_div")' > Project Creation </button>
-      <button onclick='F_Show_Menu_Div(this, "projects_list_div")' > Projects List </button>
-      <button onclick='F_Show_Menu_Div(this, "project_details_div")' > Project Details </button>
-      
-      <button onclick='F_Show_Menu_Div(this, "task_creation_div")' > Task Creation </button>
-      <button onclick='F_Show_Menu_Div(this, "tasks_list_div")' > Tasks List </button>
-      <button id=id_btn_el_task_details onclick='F_Show_Menu_Div(this, "task_details_div")' > Task Details </button>
-      <button onclick='F_Show_Menu_Div(this, "user_managment")' > User Managment </button>
-      <button class=action onclick='F_GeneralUpdate()' > Update ALL </button>
-      <button class=share onclick='F_Test_button()' > test </button>
+      <button onclick='F_Show_Menu_Div(this,"project_creation_div")'> Project Creation </button>
+      <button onclick='F_Show_Menu_Div(this, "projects_list_div")'> Projects List </button>
+      <button onclick='F_Show_Menu_Div(this, "project_details_div")'> Project Details </button>
+
+      <button onclick='F_Show_Menu_Div(this, "task_creation_div")'> Task Creation </button>
+      <button onclick='F_Show_Menu_Div(this, "tasks_list_div")'> Tasks List </button>
+      <button id=id_btn_el_task_details onclick='F_Show_Menu_Div(this, "task_details_div")'> Task Details </button>
+      <button onclick='F_Show_Menu_Div(this, "user_managment")'> User Managment </button>
+      <button class=action onclick='F_GeneralUpdate()'> Update ALL </button>
+      <button class=share onclick='F_Test_button()'> test </button>
     </div>
     <h1><?= DriveApp.getFileById(__fileId).getName() ?></h1>
     <h2 id=id_h2_login_hello></h2>
-    <div >
+    <div>
       <?!= include("projects/html_project_creation")  ?>
     </div>
-    <div >
+    <div>
       <?!= include("projects/html_projects_list")  ?>
     </div>
-    <div >
+    <div>
       <?!= include("projects/html_project_details")  ?>
     </div>
-    
-    
-    <div  >
+
+
+    <div>
       <?!= include("tasks/html_task_creation") ?>
     </div>
-    
-    <div  >
+
+    <div>
       <?!= include("tasks/html_tasks_list") ?>
     </div>
-    <div  >
+    <div>
       <?!= include("tasks/html_task_details") ?>
     </div>
-    <div  >
+    <div>
       <?!= include("html_user_managment") ?>
     </div>
-    <div  >
+    <div>
       <?!= include("html_lists") ?>
     </div>
-    
-    <!-- SHOW AFTER LOGIN -->
-    </div>
-    
-    <!-- SHOW AFTER LOGIN -->
-    
-  </body>
-  <script>
-    var fileId = '<?= __fileId ?>'
-    var ___loaded_users_list = [];
-    var ___loaded_projects_list = [];
-    var ___loaded_tasks_list = [];
-    var ___openned_for_edit_tasks = [];
-    var ____logged = 0;
-    var ____logged_name = "";
 
-    
-    
-    function F_Change_panel_position(){
-      var elem = $( "#div_task_creation_and_user_managment" );
-      if( elem.hasClass( "panel_working_position" ) ){
-        elem.removeClass( "panel_working_position" ).addClass( "panel_narrow_position" );
-      } else if( elem.hasClass( "panel_narrow_position" ) ){
-        elem.removeClass( "panel_narrow_position" ).addClass( "panel_working_position" );
-      
-      }
+    <!-- SHOW AFTER LOGIN -->
+  </div>
+
+  <!-- SHOW AFTER LOGIN -->
+
+</body>
+<script>
+  var fileId = '<?= __fileId ?>'
+  var ___loaded_users_list = [];
+  var ___loaded_projects_list = [];
+  var ___loaded_tasks_list = [];
+  var ___openned_for_edit_tasks = [];
+  var ____logged = 0;
+  var ____logged_name = "";
+
+
+
+  function F_Change_panel_position() {
+    var elem = $("#div_task_creation_and_user_managment");
+    if (elem.hasClass("panel_working_position")) {
+      elem.removeClass("panel_working_position").addClass("panel_narrow_position");
+    } else if (elem.hasClass("panel_narrow_position")) {
+      elem.removeClass("panel_narrow_position").addClass("panel_working_position");
+
     }
-    
-    $(window).bind('scroll', function () {
-      if ($(window).scrollTop() > 150) {
-        $('#const_menu').addClass('top_menu2');
-      } else {
-        $('#const_menu').removeClass('top_menu2');
-      }
-    });
-    
-// ================================================================================    
-// FUNCTIONS FOR MENU Buttons
-// ================================================================================
-function F_Show_Menu_Div(btn, div_name, showonly){
-//  console.log( btn.style.color = "red" )
-  var project_creation_div = document.getElementById( div_name );
-  if( project_creation_div.style.display != "block" ){
-    project_creation_div.style.display = "block";
-    btn.classList.add("create")
-//    var  hiddenElement = document.getElementById("task_details_div");
-    project_creation_div.scrollIntoView({block: "center", behavior: "smooth"});
+  }
+
+  $(window).bind('scroll', function () {
+    if ($(window).scrollTop() > 150) {
+      $('#const_menu').addClass('top_menu2');
+    } else {
+      $('#const_menu').removeClass('top_menu2');
+    }
+  });
+
+  // ================================================================================    
+  // FUNCTIONS FOR MENU Buttons
+  // ================================================================================
+  function F_Show_Menu_Div(btn, div_name, showonly) {
+    //  console.log( btn.style.color = "red" )
+    var project_creation_div = document.getElementById(div_name);
+    if (project_creation_div.style.display != "block") {
+      project_creation_div.style.display = "block";
+      btn.classList.add("create")
+      //    var  hiddenElement = document.getElementById("task_details_div");
+      project_creation_div.scrollIntoView({ block: "center", behavior: "smooth" });
+
+    }
+    else {
+      if (showonly == "showonly") return;
+      project_creation_div.style.display = "none";
+      btn.classList.remove("create")
+    }
 
   }
-  else {
-    if( showonly == "showonly" ) return;
-    project_creation_div.style.display = "none";
-    btn.classList.remove("create")
+  // ================================================================================    
+  // update All the Information from Database
+  // ================================================================================
+  function F_GeneralUpdate() {
+    F_UpdateProjectsList();
+    F_UpdateTasksList();
+    F_Update_Users_List();
+    F_Update_Projects_List_In_Creation();
   }
-  
-}
-// ================================================================================    
-// update All the Information from Database
-// ================================================================================
-function F_GeneralUpdate(){
-  F_UpdateProjectsList();
-  F_UpdateTasksList();
-  F_Update_Users_List();
-  F_Update_Projects_List_In_Creation();
-}
-// ================================================================================    
-// Testing
-// ================================================================================
-function F_Test_button(){
-  var x = $("#i_id_new_task_name").offset()
-  console.log( x );
-}
+  // ================================================================================    
+  // Testing
+  // ================================================================================
+  function F_Test_button() {
+    var x = $("#i_id_new_task_name").offset()
+    console.log(x);
+  }
 
-// ================================================================================    
-// Hide element by id
-// ================================================================================
-function F_Hide_Element_By_ID(__element_id) { 
-  console.log( "F_Hide_Element_By_ID", __element_id )
-  $("#"+__element_id).hide();
-}
-// ================================================================================    
-// resizable input
-// ================================================================================
-function resizable (el, factor) {
-  var int = Number(factor) || 7.7;
-  function resize() {el.style.width = ((el.value.length+1) * int) + 'px'}
-  var e = 'keyup,keypress,focus,blur,change'.split(',');
-  for (var i in e) el.addEventListener(e[i],resize,false);
-  resize();
-}
-resizable(document.getElementById('id_input_task_details_name'),7);
-resizable(document.getElementById('id_input_task_details_responcer_name'),7);
-resizable(document.getElementById('id_input_task_details_project_name'),7);
+  // ================================================================================    
+  // Hide element by id
+  // ================================================================================
+  function F_Hide_Element_By_ID(__element_id) {
+    console.log("F_Hide_Element_By_ID", __element_id)
+    $("#" + __element_id).hide();
+  }
+  // ================================================================================    
+  // resizable input
+  // ================================================================================
+  function resizable(el, factor) {
+    var int = Number(factor) || 7.7;
+    function resize() { el.style.width = ((el.value.length + 1) * int) + 'px' }
+    var e = 'keyup,keypress,focus,blur,change'.split(',');
+    for (var i in e) el.addEventListener(e[i], resize, false);
+    resize();
+  }
+  resizable(document.getElementById('id_input_task_details_name'), 7);
+  resizable(document.getElementById('id_input_task_details_responcer_name'), 7);
+  resizable(document.getElementById('id_input_task_details_project_name'), 7);
 
 
 
 
-  </script>
+</script>
+
 </html>
-
-
