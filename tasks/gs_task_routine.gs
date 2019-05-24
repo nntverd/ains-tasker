@@ -83,7 +83,7 @@ function G_ADD_JOURNAL_EVENT(__massive, __date, __event, __comment, __sender ){
 // -----------------------------------------------------------------------------
 // ADD JOURNAL EVENT -- COMMENT
 // -----------------------------------------------------------------------------
-function G_Add_Note_To_Task( _fileId, _taskid, _note, _sender ){
+function G_Add_Note_To_Task( _fileId, _listid, _taskid, _note, _sender ){
   Logger.log( "G_Add_Note_To_Task( _fileId, _massive, _note, _sender )" );
   var sheet = F_Get_Sheet_By_Name( _fileId, "active" );
   var data = sheet.getDataRange().getValues();
