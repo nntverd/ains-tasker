@@ -22,7 +22,7 @@
 // -----------------------------------------------------------------------------
 // ADD JOURNAL EVENT AND SAVE
 // -----------------------------------------------------------------------------
-function G_ADD_JOURNAL_EVENT_AND_SAVE_______________NOT_TO_USE
+function G_ADD_JOURNAL_EVENT_AND_SAVE
   (
      _fileId, 
      _taskid, 
