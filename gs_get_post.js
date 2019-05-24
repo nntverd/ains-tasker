@@ -46,3 +46,21 @@ function F_Get_File_By_Desc(_desc){
   return false;
 }
 
+
+// ======================================================================
+// Function of getting sheet by name
+// ======================================================================
+function F_Get_Sheet_By_Name( _sheet_id, _sheetName ){
+  var sheetName = "active";
+  if( _sheetName != null ){
+    sheetName = _sheetName;
+  }
+  
+  var sheets = SpreadsheetApp.openById(_sheet_id).getSheets();
+  for( var ish in sheets ){
+    if( sheets[ish].getName() == sheetName ){
+      return sheets[ish];
+    }
+  }
+  return F_Init_Sheet( _sheet_id, sheetName );
+}

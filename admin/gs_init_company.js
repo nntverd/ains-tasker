@@ -25,18 +25,7 @@ function F_Init_Sheet( _sheet_id, _sheetName ){
 }
 
 
-// ======================================================================
-// Function of getting sheet by name
-// ======================================================================
-function F_Get_Sheet_By_Name( _sheet_id, _sheetName ){
-  var sheets = SpreadsheetApp.openById(_sheet_id).getSheets();
-  for( var ish in sheets ){
-    if( sheets[ish].getName() == _sheetName ){
-      return sheets[ish];
-    }
-  }
-  return F_Init_Sheet( _sheet_id, _sheetName );
-}
+
 
 // ======================================================================
 // Testing Function

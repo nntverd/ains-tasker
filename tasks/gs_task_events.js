@@ -1,7 +1,7 @@
 // -----------------------------------------------------------------------------
 // GET TASKS LIST
 // -----------------------------------------------------------------------------
-function G_Save_Changes_In_Task_Details_On_Server( _fileId, ___openned_for_edit_tasks, __sender ){
+/*function G_Save_Changes_In_Task_Details_On_Server( _fileId, ___openned_for_edit_tasks, __sender ){
   var sheet = F_Get_Sheet_By_Name( _fileId, "active" );
   var data = sheet.getDataRange().getValues();
   var openned_for_edit_tasks = JSON.parse( ___openned_for_edit_tasks );
@@ -17,17 +17,23 @@ function G_Save_Changes_In_Task_Details_On_Server( _fileId, ___openned_for_edit_
     }
   }
   throw( "ERROR. G_Save_Changes_In_Task_Details_On_Server" )
-}
+}*/
 
 // -----------------------------------------------------------------------------
 // ADD JOURNAL EVENT AND SAVE
 // -----------------------------------------------------------------------------
-function G_ADD_JOURNAL_EVENT_AND_SAVE(_fileId, _taskid, __date, __event, __comment, __sender, __stage ){
-  var stage = "active";
-  if( __stage != null ){
-    stage = __stage;
-  }
-  var sheet = F_Get_Sheet_By_Name( _fileId, stage );
+function G_ADD_JOURNAL_EVENT_AND_SAVE_______________NOT_TO_USE
+  (
+     _fileId, 
+     _taskid, 
+     __date, 
+     __event, 
+     __comment, 
+     __sender, 
+     __stage 
+  ){
+  
+  var sheet = F_Get_Sheet_By_Name( _fileId, __stage );
   var data = sheet.getDataRange().getValues();
   var new_event = {
     date: __date,
@@ -58,7 +64,13 @@ function G_ADD_JOURNAL_EVENT_AND_SAVE(_fileId, _taskid, __date, __event, __comme
 // -----------------------------------------------------------------------------
 // ADD JOURNAL EVENT -- COMMENT
 // -----------------------------------------------------------------------------
-function G_Add_Note_To_Task( _fileId, _listid, _taskid, _note, _sender ){
+function G_Add_Note_To_Task( 
+      _fileId, 
+      _listid, 
+      _taskid, 
+      _note, 
+      _sender 
+){
   Logger.log( "G_Add_Note_To_Task( _fileId, _massive, _note, _sender )" );
   var sheet = F_Get_Sheet_By_Name( _fileId, "active" );
   var data = sheet.getDataRange().getValues();

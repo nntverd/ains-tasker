@@ -1,9 +1,14 @@
 // -----------------------------------------------------------------------------
 // ADD NEW TASK INTO ACTIVE TASKS LIST
 // -----------------------------------------------------------------------------
-function G_Add_New_Task( _fileId, _i_id_new_task_name, _i_id_new_task_desc,  i_id_new_task_responcer_id, 
-                        i_id_new_task_controller_id, i_id_new_task_project_id, i_id_new_task_creator_id,
-                       __sender) {
+function G_Add_New_Task(  _fileId, 
+                          _i_id_new_task_name, 
+                          _i_id_new_task_desc,  
+                          i_id_new_task_responcer_id, 
+                          i_id_new_task_controller_id, 
+                          i_id_new_task_project_id, 
+                          i_id_new_task_creator_id,
+                          __sender) {
   var sheet = F_Get_Sheet_By_Name( _fileId, "active" );
   var date = new Date();
   var task_id = Math.random().toString(36).substring(0);
@@ -37,10 +42,12 @@ function G_Add_New_Task( _fileId, _i_id_new_task_name, _i_id_new_task_desc,  i_i
 }
 
 // -----------------------------------------------------------------------------
-// GET TASKS LIST
+// GET TASKS LIST  | RETURNs Massive of tasks to client
 // -----------------------------------------------------------------------------
-function G_UpdateTasksList( _fileId ){
-  var sheet = F_Get_Sheet_By_Name( _fileId, "active" );
+function G_UpdateTasksList( _fileId, _sheetName ){
+  sheetName = "active";
+  if( _sheetName != null ) sheetName = _sheetName;
+  var sheet = F_Get_Sheet_By_Name( _fileId, sheetName );
   var tasks = sheet.getDataRange().getValues();
   return [101, "Return From GAS = G_UpdateTasksList( _fileId )", JSON.stringify(tasks)];
 }
